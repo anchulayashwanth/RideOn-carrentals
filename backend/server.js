@@ -14,6 +14,10 @@ dotenv.config();
 
 const app = express();
 
+// Deployment health logs
+console.log("Current Environment:", process.env.NODE_ENV);
+console.log("MongoDB URI defined:", !!process.env.MONGODB_URI);
+
 // Connect to MongoDB
 connectDB().catch(err => {
   console.error("❌ MongoDB connection failure:", err.message);

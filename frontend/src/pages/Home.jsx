@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import HeroSection from "../components/HeroSection";
 import { motion } from "framer-motion";
 import { FaMoneyBillWave, FaCar, FaHeadset, FaShieldAlt } from "react-icons/fa";
-import heroBgCar from "../assets/hero-bg-car.jpg";
+// No import needed for public assets if using absolute paths
+
 
 export default function Home() {
   useEffect(() => {
@@ -46,7 +47,7 @@ export default function Home() {
               </p>
             </div>
             <div className="mt-8 h-48 rounded-2xl bg-gradient-to-br from-brand-purple/20 to-transparent overflow-hidden relative shadow-inner">
-              <img src={heroBgCar} className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" alt="Fleet" />
+              <img src="/premium_car.png" className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" alt="Fleet" />
             </div>
           </motion.div>
 

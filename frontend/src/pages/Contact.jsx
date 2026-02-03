@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/api.js";
 import { motion } from "framer-motion";
 import { FaPaperPlane } from "react-icons/fa";
 
@@ -20,8 +20,8 @@ export default function Contact() {
 
     try {
       setLoading(true);
-      // Using proxy path
-      await axios.post("/api/contact", form);
+      // Use shared axios instance with baseURL from VITE_API_URL
+      await api.post("/api/contact", form);
       alert("✅ Message sent successfully!");
       setForm({ name: "", email: "", message: "" });
     } catch (error) {

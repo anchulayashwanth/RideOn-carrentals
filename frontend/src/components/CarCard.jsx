@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../api/api.js"; // Use your Axios instance
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -23,11 +23,7 @@ export default function CarCard({ car }) {
       const diffTime = Math.abs(end - start);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      if (diffDays > 0) {
-        setTotalPrice(diffDays * car.daily_rate_inr);
-      } else {
-        setTotalPrice(0);
-      }
+      setTotalPrice(diffDays > 0 ? diffDays * car.daily_rate_inr : 0);
     }
   }, [startDate, endDate, car.daily_rate_inr]);
 
@@ -41,28 +37,19 @@ export default function CarCard({ car }) {
   };
 
   const confirmBooking = async () => {
-    if (!startDate || !endDate) {
-      alert("Please select both start and end dates.");
-      return;
-    }
-
-    if (totalPrice <= 0) {
-      alert("Invalid duration.");
-      return;
-    }
+    if (!startDate || !endDate) return alert("Please select both start and end dates.");
+    if (totalPrice <= 0) return alert("Invalid duration.");
 
     const bookingData = {
       carId: car._id,
       carName: `${car.make} ${car.model}`,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
-      totalPrice: totalPrice,
+      totalPrice,
     };
 
-    console.log("📤 Sending booking:", bookingData);
-
     try {
-      const res = await axios.post("/api/bookings", bookingData, {
+      const res = await api.post("/api/bookings", bookingData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("✅ Booking successful!");
@@ -92,8 +79,8 @@ export default function CarCard({ car }) {
             alt={`${car.make} ${car.model}`}
             className="w-full h-full object-cover"
             onError={(e) => {
-              e.target.src = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&q=80&w=1000"; // Generic Car Fallback
-              e.target.onerror = null; // Prevent infinite loop
+              e.target.src = "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&q=80&w=1000";
+              e.target.onerror = null;
             }}
           />
           <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-sm font-bold text-brand-dark shadow-sm">
@@ -108,13 +95,17 @@ export default function CarCard({ car }) {
               <h3 className="text-lg font-bold text-gray-900">{car.model}</h3>
               <span className="text-xs text-gray-500">{car.type}</span>
             </div>
-            <div className={`text-xs px-2 py-1 rounded font-medium ${car.availability_status === 'Available' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-              }`}>
+            <div
+              className={`text-xs px-2 py-1 rounded font-medium ${
+                car.availability_status === "Available"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              }`}
+            >
               {car.availability_status}
             </div>
           </div>
 
-          {/* Specs Grid */}
           <div className="grid grid-cols-3 gap-2 my-4 border-t border-b border-gray-100 py-3">
             <div className="flex flex-col items-center text-center gap-1">
               <FaGasPump className="text-gray-400" />
@@ -139,7 +130,6 @@ export default function CarCard({ car }) {
         </div>
       </motion.div>
 
-      {/* Booking Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <motion.div
@@ -163,7 +153,7 @@ export default function CarCard({ car }) {
                 <input
                   type="date"
                   value={startDate}
-                  min={new Date().toISOString().split('T')[0]}
+                  min={new Date().toISOString().split("T")[0]}
                   onChange={(e) => setStartDate(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                 />
@@ -174,7 +164,7 @@ export default function CarCard({ car }) {
                 <input
                   type="date"
                   value={endDate}
-                  min={startDate || new Date().toISOString().split('T')[0]}
+                  min={startDate || new Date().toISOString().split("T")[0]}
                   onChange={(e) => setEndDate(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                 />
@@ -182,7 +172,9 @@ export default function CarCard({ car }) {
 
               <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 flex justify-between items-center mt-4">
                 <span className="text-gray-600 font-medium">Total Price</span>
-                <span className="text-2xl font-bold text-brand-purple">₹{totalPrice.toLocaleString()}</span>
+                <span className="text-2xl font-bold text-brand-purple">
+                  ₹{totalPrice.toLocaleString()}
+                </span>
               </div>
 
               <button

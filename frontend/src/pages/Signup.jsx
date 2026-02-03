@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/api.js";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -22,7 +22,7 @@ export default function Signup() {
 
     try {
       setLoading(true);
-      const res = await axios.post("/api/auth/register", {
+      const res = await api.post("/api/auth/register", {
         name,
         email,
         password,

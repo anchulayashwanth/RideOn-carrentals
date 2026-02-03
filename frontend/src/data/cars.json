@@ -8,7 +8,7 @@
     "seating_capacity": 5,
     "daily_rate_inr": 1200,
     "availability_status": "Available",
-    "image_url": "/images/maruti_suzuki_swift.jpg"
+    "image_url": "/images/cars/maruti-suzuki-swift.jpeg"
   },
   {
     "id": 2,

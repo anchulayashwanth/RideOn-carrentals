@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../api/api.js";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -19,8 +19,8 @@ export default function Login() {
 
     try {
       setLoading(true);
-      // Using proxy path
-      const res = await axios.post("/api/auth/login", {
+      // Use shared axios instance with baseURL from VITE_API_URL
+      const res = await api.post("/api/auth/login", {
         email,
         password,
       });

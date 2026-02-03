@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/api.js";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -20,7 +20,7 @@ export default function MyBookings() {
 
         const fetchBookings = async () => {
             try {
-                const res = await axios.get("/api/bookings/my-bookings", {
+                const res = await api.get("/api/bookings/my-bookings", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setBookings(res.data);

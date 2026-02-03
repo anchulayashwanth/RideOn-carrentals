@@ -9,39 +9,36 @@ import contactRoutes from "./routes/contactRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import connectDB from "./config/db.js";
 
+// Load environment variables
 dotenv.config();
+
 const app = express();
+
+// Connect to MongoDB
+connectDB().catch(err => {
+  console.error("❌ MongoDB connection failure:", err.message);
+});
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB, then start server
-const startServer = async () => {
-  try {
-    await connectDB();
-  } catch (err) {
-    console.error("❌ Exiting due to DB connection failure:", err.message);
-    process.exit(1);
-  }
+// API Routes
+app.use("/api/cars", carRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/bookings", bookingRoutes);
 
-  // API Routes
-  app.use("/api/cars", carRoutes);
-  app.use("/api/auth", authRoutes);
-  app.use("/api/contact", contactRoutes);
-  app.use("/api/bookings", bookingRoutes);
+// Root route
+app.get("/", (req, res) => {
+  res.send("RideOn API is running 🚗");
+});
 
-  // Backend-only service (frontend deployed separately)
-  app.get("/", (req, res) => {
-    res.send("RideOn API is running 🚗");
-  });
+// For local development
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+}
 
-  // Render-required port
-  if (process.env.NODE_ENV !== "production") {
-    const PORT = process.env.PORT || 10000;
-    app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-  }
-};
-startServer();
-
-// (server is started in startServer after DB connection)
+// Export the app for Vercel
+export default app;

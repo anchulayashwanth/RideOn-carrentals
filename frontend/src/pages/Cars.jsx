@@ -29,7 +29,7 @@ export default function Cars() {
         setFilteredCars(carData);
       } catch (err) {
         console.error("❌ Error fetching cars:", err);
-        setError("Failed to load cars. Please check backend connection.");
+        setError(`Failed to load cars. Details: ${err.message}`);
       } finally {
         setLoading(false);
       }

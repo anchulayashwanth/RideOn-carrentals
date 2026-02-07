@@ -35,7 +35,12 @@ app.use("/api/bookings", bookingRoutes);
 
 // Root route
 app.get("/", (req, res) => {
-  res.send("RideOn API is running 🚗");
+  res.json({
+    message: "RideOn API is running 🚗",
+    env: process.env.NODE_ENV,
+    database: mongoose.connection.readyState === 1 ? "Connected" : "Disconnected",
+    timestamp: new Date().toISOString()
+  });
 });
 
 // For local development

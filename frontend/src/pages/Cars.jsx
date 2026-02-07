@@ -22,10 +22,11 @@ export default function Cars() {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const res = await api.get("/api/cars"); // UPDATED
+        const res = await api.get("/api/cars");
         console.log("✅ Cars fetched:", res.data);
-        setCars(res.data);
-        setFilteredCars(res.data);
+        const carData = Array.isArray(res.data) ? res.data.filter(c => c !== null && typeof c === 'object') : [];
+        setCars(carData);
+        setFilteredCars(carData);
       } catch (err) {
         console.error("❌ Error fetching cars:", err);
         setError("Failed to load cars. Please check backend connection.");
@@ -56,10 +57,13 @@ export default function Cars() {
     setFilteredCars(result);
   }, [filters, cars]);
 
-  const makes = useMemo(() => ["All", ...new Set(cars.map((c) => c.make))], [cars]);
-  const types = useMemo(() => ["All", ...new Set(cars.map((c) => c.type))], [cars]);
-  const fuels = useMemo(() => ["All", ...new Set(cars.map((c) => c.fuel_type))], [cars]);
-  const maxPrice = useMemo(() => Math.max(...cars.map((c) => c.daily_rate_inr), 50000), [cars]);
+  const makes = useMemo(() => ["All", ...new Set(cars.filter(c => c && c.make).map((c) => c.make))], [cars]);
+  const types = useMemo(() => ["All", ...new Set(cars.filter(c => c && c.type).map((c) => c.type))], [cars]);
+  const fuels = useMemo(() => ["All", ...new Set(cars.filter(c => c && c.fuel_type).map((c) => c.fuel_type))], [cars]);
+  const maxPrice = useMemo(() => {
+    const prices = cars.map((c) => c.daily_rate_inr).filter(p => typeof p === 'number' && !isNaN(p));
+    return prices.length > 0 ? Math.max(...prices) : 50000;
+  }, [cars]);
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));

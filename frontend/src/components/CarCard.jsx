@@ -6,7 +6,13 @@ import { FaGasPump, FaCogs, FaChair, FaTimes } from "react-icons/fa";
 
 export default function CarCard({ car }) {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  let user = null;
+  try {
+    const storedUser = localStorage.getItem("user");
+    user = storedUser ? JSON.parse(storedUser) : null;
+  } catch (err) {
+    console.error("Error parsing user from localStorage:", err);
+  }
   const token = localStorage.getItem("token");
 
   // Modal State
@@ -96,11 +102,10 @@ export default function CarCard({ car }) {
               <span className="text-xs text-gray-500">{car.type}</span>
             </div>
             <div
-              className={`text-xs px-2 py-1 rounded font-medium ${
-                car.availability_status === "Available"
+              className={`text-xs px-2 py-1 rounded font-medium ${car.availability_status === "Available"
                   ? "bg-green-100 text-green-700"
                   : "bg-red-100 text-red-700"
-              }`}
+                }`}
             >
               {car.availability_status}
             </div>

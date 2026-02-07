@@ -11,12 +11,26 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   // Reactive User State
-  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("user")));
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      return stored ? JSON.parse(stored) : null;
+    } catch (e) {
+      console.error("Error parsing user from local storage:", e);
+      return null;
+    }
+  });
 
   useEffect(() => {
     // Handler to update user state from localStorage
     const handleAuthChange = () => {
-      setUser(JSON.parse(localStorage.getItem("user")));
+      try {
+        const stored = localStorage.getItem("user");
+        setUser(stored ? JSON.parse(stored) : null);
+      } catch (e) {
+        console.error("Error parsing user during auth change:", e);
+        setUser(null);
+      }
     };
 
     // Listen for custom event and storage event (cross-tab)

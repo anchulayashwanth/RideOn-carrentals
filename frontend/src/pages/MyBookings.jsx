@@ -8,7 +8,13 @@ export default function MyBookings() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    let user = null;
+    try {
+        const storedUser = localStorage.getItem("user");
+        user = storedUser ? JSON.parse(storedUser) : null;
+    } catch (err) {
+        console.error("Error parsing user in MyBookings:", err);
+    }
     const token = localStorage.getItem("token");
 
     useEffect(() => {

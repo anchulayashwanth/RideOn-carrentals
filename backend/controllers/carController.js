@@ -1,11 +1,7 @@
-import mongoose from "mongoose";
 import Car from "../models/Car.js";
 
 export const getCars = async (req, res) => {
   try {
-    if (mongoose.connection.readyState !== 1) {
-      return res.status(503).json({ message: "Database not connected" });
-    }
     const cars = await Car.find().sort({ id: 1 });
     res.json(cars);
   } catch (error) {
